@@ -2,7 +2,9 @@
 require('dotenv').config();
 const { ensureConnected, disconnect } = require('../src/config/db');
 const User = require('../src/models/User');
+const  dns = require('node:dns');
 
+dns.setServers(['1.1.1.1', '1.0.0.1']); // Forces Cloudflare DNS
 (async () => {
   try {
     if (!process.env.MONGODB_URI) throw new Error('MONGODB_URI is missing from .env');

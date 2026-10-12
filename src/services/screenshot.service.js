@@ -96,7 +96,7 @@ class ScreenshotService {
     this.takenThisRun = new Map();
   }
 
-  async capture(isRunning = () => true) {
+  async capture(isRunning = () => true, activity = { activityPercentage: null }) {
     if (!isRunning()) return { saved: 0, unchanged: 0, errors: 0 };
     let screens;
     try {
@@ -145,14 +145,14 @@ class ScreenshotService {
           captureId: randomUUID(), user: String(this.user._id), userName: this.user.name,
           date, time: localTime(now), timestamp: now.toISOString(),
           machine: this.machine, screenshotPath: filePath, screen: index + 1,
-          activeWindow: window, extractedText, unchanged, createdAt: new Date().toISOString()
+          activeWindow: window, extractedText, unchanged, ...activity, createdAt: new Date().toISOString()
         };
         this.queue.enqueue(record);
         stats.saved++;
         if (unchanged) stats.unchanged++;
         this.lastScreenshotAt = now;
         this.lastScreenshotPath = filePath;
-        this.lastCapture = { activeWindow: window, screen: index + 1, unchanged };
+        this.lastCapture = { activeWindow: window, screen: index + 1, unchanged, ...activity };
         this.takenThisRun.set(date, (this.takenThisRun.get(date) || 0) + 1);
       } catch (error) {
         stats.errors++;

@@ -117,7 +117,8 @@ function registerIpc() {
 if (locked) {
   app.whenReady().then(async () => {
     app.setAppUserModelId('com.daymark.timetracker');
-    controller = new DesktopController({ dataDir: app.getPath('userData') });
+    controller = new DesktopController({ dataDir: app.getPath('userData'),
+      getIdleSeconds: () => powerMonitor.getSystemIdleTime() });
     try { await controller.initialize(); }
     catch (error) { console.error('[startup]', error); controller.logError(error); }
     registerIpc();

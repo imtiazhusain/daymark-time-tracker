@@ -14,6 +14,7 @@ const { LocalState, TimerService, atomicJsonWrite } = require('./timer.service')
 const { ScreenshotService, PendingRecords } = require('./screenshot.service');
 const OCRService = require('./ocr.service');
 const TrackerService = require('./tracker.service');
+const ActivityService = require('./activity.service');
 const { positiveInt, localDateKey, errorMessage } = require('../utils/format');
 
 const DEFAULT_PREFS = Object.freeze({
@@ -35,9 +36,10 @@ function safePrefs(raw = {}) {
 }
 
 class DesktopController extends EventEmitter {
-  constructor({ dataDir }) {
+  constructor({ dataDir, getIdleSeconds = null }) {
     super();
     this.dataDir = dataDir;
+    this.getIdleSeconds = getIdleSeconds;
     this.envPath = path.join(dataDir, '.env');
     this.prefsPath = path.join(dataDir, 'preferences.json');
     this.selectionPath = path.join(dataDir, 'selection.json');
@@ -246,6 +248,7 @@ console.log(
           imageQuality: this.prefs.imageQuality,
           ocr: this.ocr, pendingRecords: this.queue });
         this.tracker = new TrackerService({ timer: this.timer,
+          activity: this.getIdleSeconds ? new ActivityService({ getIdleSeconds: this.getIdleSeconds }) : null,
           screenshots: this.screenshots, ocr: this.ocr,
           screenshotIntervalSeconds: this.prefs.screenshotIntervalSeconds,
           onTick: async stats => {
@@ -444,6 +447,7 @@ console.log(
       lastAppName: this.screenshots?.lastCapture?.activeWindow?.appName || '',
       lastScreen: this.screenshots?.lastCapture?.screen || null,
       lastUnchanged: this.screenshots?.lastCapture?.unchanged || false,
+      lastActivityPercentage: this.screenshots?.lastCapture?.activityPercentage ?? null,
       lastTick: this.lastTick,
       lastError: this.lastError,
       settings: { ...this.prefs },

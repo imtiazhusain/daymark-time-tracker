@@ -2,7 +2,8 @@
 const { localTime, formatDuration, errorMessage } = require('../utils/format');
 
 class TrackerService {
-  constructor({ timer, screenshots, ocr, screenshotIntervalSeconds, onTick = null }) {
+  constructor({ timer, screenshots, ocr, activity = null, screenshotIntervalSeconds, onTick = null }) {
+    this.activity = activity;
     this.onTick = onTick;
     this.timer = timer;
     this.screenshots = screenshots;
@@ -17,6 +18,7 @@ class TrackerService {
   async start() {
     this.status = 'running';
     this.timer.start();
+    this.activity?.start();
     this.scheduleCapture(0);
   }
 
@@ -31,7 +33,8 @@ class TrackerService {
     this.tickPromise = (async () => {
       const started = new Date();
       try {
-        const stats = await this.screenshots.capture(() => this.status === 'running' && !this.stopping);
+        const activity = this.activity?.snapshot() || { activityPercentage: null };
+        const stats = await this.screenshots.capture(() => this.status === 'running' && !this.stopping, activity);
         console.log(`[${localTime(started)}] screenshots=${stats.saved} unchanged=${stats.unchanged} pending=${this.screenshots.queue.items.length} errors=${stats.errors}`);
         if (this.onTick) {
           try { await this.onTick(stats); }
@@ -51,6 +54,7 @@ class TrackerService {
   async pause() {
     if (this.status !== 'running') return;
     this.status = 'paused';
+    this.activity?.stop();
     clearTimeout(this.captureTimeout);
     await this.timer.pause();
     console.log(`Paused. Time today: ${formatDuration(this.timer.getTodaySeconds())}`);
@@ -60,6 +64,7 @@ class TrackerService {
     if (this.status !== 'paused') return;
     this.status = 'running';
     await this.timer.resume();
+    this.activity?.start();
     this.scheduleCapture(0);
     console.log('Resumed tracking.');
   }
@@ -77,6 +82,7 @@ class TrackerService {
     if (this.stopping) return;
     this.stopping = true;
     this.status = 'stopped';
+    this.activity?.stop();
     clearTimeout(this.captureTimeout);
     // Close time tracking immediately; don't count a possibly long OCR shutdown.
     await this.timer.stop();

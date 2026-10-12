@@ -143,6 +143,8 @@ function draw(s) {
   $('connectionChip').textContent = s.dbConnected ? 'Connected' : s.hasMongoUri ? 'Offline / reconnecting' : 'Not configured';
   $('captureInterval').textContent = `Every ${s.settings.screenshotIntervalSeconds}s`;
   $('ocrState').textContent = s.settings.ocrEnabled ? 'Enabled' : 'Disabled';
+  $('activityPercentage').textContent = s.lastActivityPercentage == null
+    ? 'Not available yet' : `${s.lastActivityPercentage}%`;
   $('dataFolder').textContent = s.dataDir;
   if (s.lastCaptureAt) {
     const time = new Date(s.lastCaptureAt).toLocaleTimeString();

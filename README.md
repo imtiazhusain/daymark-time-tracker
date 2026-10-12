@@ -51,6 +51,8 @@ npm run dist:portable
 
 The desktop app intentionally has a larger idle RAM footprint than the original CLI because Electron includes Chromium. The screenshot/OCR work remains serialized, and its original worker re-use, throttling, and local recovery behavior is preserved.
 
+The desktop app samples system input idle time once per second while tracking. Each screenshot record includes `activityPercentage`, `activityWindowSeconds`, and `activityActiveSeconds`; the preview shows the latest percentage. Activity is the percentage of sampled time with input in the preceding second, including mouse movement, mouse clicks and keyboard input. It is an estimate of input activity, not productivity or individual click counts. All monitors in a capture share the same measurement. Pause and resume reset the window. The immediate first capture and unavailable measurements show no percentage (`null`), rather than a misleading zero. CLI captures have no activity measurement. No key contents, mouse positions, or input event history are recorded. This adds one native query per second and a few counters; real resource usage still depends mainly on screenshots and OCR.
+
 ### Where your data lives
 
 Packaged desktop app and the Electron development app store **mutable data outside the installation** (in Electron's `app.getPath('userData')`, typically `%APPDATA%\DaymarkTimeTracker`):
