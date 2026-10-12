@@ -1,0 +1,75 @@
+{
+  "name": "daymark-windows-time-tracker",
+  "version": "1.2.0",
+  "private": true,
+  "description": "Windows desktop time tracker with screenshots, OCR and offline-safe MongoDB Atlas synchronization",
+  "main": "desktop/main.js",
+  "type": "commonjs",
+  "author": "",
+  "license": "UNLICENSED",
+  "engines": {
+    "node": ">=18.18.0"
+  },
+  "scripts": {
+    "start": "electron .",
+    "desktop": "electron .",
+    "cli": "node src/index.js",
+    "seed": "node scripts/seed-users.js",
+    "dist:win": "electron-builder --win nsis portable --x64",
+    "dist:portable": "electron-builder --win portable --x64",
+    "test": "node --test tests/*.test.js",
+    "check": "node scripts/check-syntax.js"
+  },
+  "dependencies": {
+    "active-win": "9.0.0",
+    "dotenv": "^16.4.7",
+    "inquirer": "^8.2.6",
+    "mongoose": "^8.11.0",
+    "screenshot-desktop": "^1.15.6",
+    "sharp": "^0.33.5",
+    "tesseract.js": "^6.0.1"
+  },
+  "devDependencies": {
+    "electron": "^35.0.0",
+    "electron-builder": "^25.1.8"
+  },
+  "build": {
+    "appId": "com.daymark.timetracker",
+    "productName": "Daymark Time Tracker",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "desktop/**/*",
+      "src/**/*",
+      "resources/**/*",
+      "node_modules/**/*",
+      "package.json",
+      "!**/*.map",
+      "!**/.cache/**"
+    ],
+    "asar": true,
+    "asarUnpack": [
+      "node_modules/sharp/**/*",
+      "node_modules/@img/**/*",
+      "node_modules/active-win/**/*",
+      "node_modules/screenshot-desktop/**/*",
+      "node_modules/tesseract.js-core/**/*",
+      "node_modules/tesseract.js/**/*"
+    ],
+    "extraResources": [],
+    "win": {
+      "icon": "resources/tracker.ico",
+      "target": [
+        "nsis",
+        "portable"
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    }
+  }
+}

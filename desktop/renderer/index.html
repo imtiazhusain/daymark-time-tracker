@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'none'">
+  <title>Daymark — Windows Time Tracker</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="brand"><div class="brand-mark"><span></span><span></span><span></span><span></span></div><div><strong>daymark<span class="brand-period">.</span></strong><small>WORKSPACE TRACKER</small></div></div>
+      <div class="sidebar-kicker">WORKSPACE</div>
+      <nav>
+        <button class="nav-link active" id="navOverview" type="button"><span class="nav-icon">▦</span> Overview <span class="nav-dot"></span></button>
+        <button class="nav-link" id="navHistory" type="button">
+  <span class="nav-icon">◷</span>
+  History
+</button>
+        <button class="nav-link" id="navSettings" type="button"><span class="nav-icon">⚙</span> Settings</button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="privacy-tip"><div class="tip-icon">◇</div><strong>Privacy first</strong><p>Tracking only runs after you press Start. Screenshots are saved locally; metadata and extracted text sync to your Atlas database.</p></div>
+        <div class="app-version">DAYMARK DESKTOP <span>v1.2</span></div>
+      </div>
+    </aside>
+    <main class="main">
+      <header class="topbar"><div class="breadcrumb">Workspace <span>/</span> <strong id="breadcrumb">Overview</strong></div><div class="topbar-right"><span id="dbIndicator" class="connection-status offline"><i></i> Database offline</span><div class="avatar" id="avatar">D</div></div></header>
+      <section class="view" id="overviewView">
+        <div class="page-head"><div><p class="eyebrow">YOUR DAILY OVERVIEW</p><h1>Make today count<span>.</span></h1><p class="subtitle" id="greeting">Select your profile to get started.</p></div><div class="date-pill" id="todayDate">Today</div></div>
+        <div class="hero">
+          <div class="hero-top"><div class="hero-label"><span class="pulse-dot" id="pulseDot"></span><span id="trackingLabel">NOT TRACKING</span></div><span class="hero-tag" id="heroTag">READY WHEN YOU ARE</span></div>
+          <div class="hero-timer" id="timeValue">00:00:00</div><div class="timer-caption">TOTAL ACTIVE TIME TODAY</div>
+          <div class="hero-bottom"><div class="hero-user"><label for="userSelect">TRACKING PROFILE</label><select id="userSelect"><option value="">Choose a user...</option></select></div><div class="hero-actions"><button id="mainButton" class="button button-primary" type="button">▶ <span id="mainButtonText">Start tracking</span></button><button id="stopButton" class="button button-secondary" type="button" disabled>■ Stop</button></div></div>
+        </div>
+        <div class="stats-grid">
+          <article class="stat-card"><div class="stat-top"><span>SCREENSHOTS TODAY</span><div class="stat-icon">▧</div></div><div class="stat-value" id="screenshotCount">0</div><p>Captures saved locally</p></article>
+          <article class="stat-card"><div class="stat-top"><span>ACTIVE SESSIONS</span><div class="stat-icon">◷</div></div><div class="stat-value" id="sessionCount">0</div><p>Work sessions opened today</p></article>
+          <article class="stat-card"><div class="stat-top"><span>WAITING TO SYNC</span><div class="stat-icon">⇧</div></div><div class="stat-value" id="pendingCount">0</div><p>Screenshot records pending</p></article>
+        </div>
+        <div class="section-head"><div><h2>Capture activity</h2><p>See what your tracker last recorded</p></div><button class="text-button" id="openShots" type="button">Open screenshots folder ↗</button></div>
+        <div class="activity-panel"><div class="preview-frame"><div class="preview-empty" id="previewEmpty"><div class="preview-icon">▧</div><strong>No screenshots yet</strong><small>Your last capture will appear here</small></div><img id="previewImage" alt="Most recent captured screen" hidden></div><div class="activity-details"><div class="section-mini">MOST RECENT CAPTURE</div><strong class="activity-title" id="lastCapture">Nothing captured yet</strong><div class="activity-meta" id="lastApp">Start tracking to record window activity.</div><div class="activity-row"><span>Next capture</span><strong id="captureInterval">Every 120s</strong></div><div class="activity-row"><span>OCR processing</span><strong id="ocrState">Enabled</strong></div><div class="activity-row"><span>Unsynced active time</span><strong id="unsyncedTime">0 seconds</strong></div></div></div>
+      </section>
+      <section class="view" id="historyView" hidden>
+
+  <div class="page-head">
+    <div>
+      <p class="eyebrow">WORK HISTORY</p>
+      <h1>Monthly report<span>.</span></h1>
+      <p class="subtitle" id="historyUser">
+        Select a user on Overview to view their history.
+      </p>
+    </div>
+  </div>
+
+  <div class="history-panel">
+
+    <div class="history-toolbar">
+      <div>
+        <label for="historyMonth">SELECT MONTH</label>
+        <input type="month" id="historyMonth">
+      </div>
+
+      <button
+        class="button button-outline"
+        id="refreshHistory"
+        type="button">
+        Refresh
+      </button>
+    </div>
+
+    <div class="history-totals">
+
+      <div>
+        <small>MONTHLY ACTIVE TIME</small>
+        <strong id="historyTotal">0 hours</strong>
+      </div>
+
+      <div>
+        <small>DAYS WORKED</small>
+        <strong id="historyWorkDays">0</strong>
+      </div>
+
+    </div>
+
+    <p
+      class="history-source"
+      id="historySource"
+      role="status">
+      Choose a month to load the report.
+    </p>
+
+    <div class="history-table-scroll">
+      <table class="history-table">
+
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Time worked</th>
+          </tr>
+        </thead>
+
+        <tbody id="historyDays"></tbody>
+
+      </table>
+    </div>
+
+  </div>
+
+</section>
+      <section class="view settings-view" id="settingsView" hidden>
+        <div class="page-head"><div><p class="eyebrow">WORKSPACE CONFIGURATION</p><h1>Your settings<span>.</span></h1><p class="subtitle">Configure your Atlas connection.</p></div></div>
+        <div class="settings-card"><div class="settings-card-header"><div><h2>MongoDB Atlas</h2><p>Stored only in your Windows user profile, never displayed again after saving.</p></div><span class="small-chip" id="connectionChip">Not connected</span></div><div id="connectionSaved" class="saved-connection" hidden><span class="saved-icon">✓</span><div class="saved-copy"><strong>Connection saved on this computer</strong><p id="savedConnectionMessage">Daymark automatically reconnects using your saved Atlas credentials.</p></div><button class="button button-outline" id="changeConnection" type="button">Change connection</button></div><div id="connectionEditor"><label for="mongoUri">Connection string <span id="connectionEditorHint">(first-time setup)</span></label><div class="input-row"><input id="mongoUri" type="password" autocomplete="off" spellcheck="false" placeholder="mongodb+srv://user:password@cluster.mongodb.net/time-tracker"><button class="button button-primary" id="connectButton" type="button">Save & connect</button><button class="button button-secondary" id="cancelConnection" type="button" hidden>Cancel</button></div><p class="input-hint">Your MongoDB user needs permission to read and write the time-tracker database. Keep this URI private.</p></div><div class="settings-rule"></div><button class="button button-outline" id="seedButton" type="button">Add Saifullah & Hizbullah</button><p class="input-hint">Creates these default users if missing. You can also seed users using the original CLI.</p></div>
+        
+        <div class="settings-card data-card"><h2>Local data</h2><p>Local screenshots, offline time checkpoints, and unsent records persist across restarts in your application data folder.</p><code id="dataFolder">Loading...</code><button class="text-button" id="openData" type="button">Open data folder ↗</button></div>
+      </section>
+      <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+    </main>
+  </div>
+</body>
+</html>

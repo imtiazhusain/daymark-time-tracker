@@ -1,0 +1,29 @@
+DAYMARK v1.2 — ONE-TIME MONGODB ATLAS SETUP
+==========================================
+1. Quit Daymark before upgrading.
+2. Extract this ZIP into a NEW folder, or replace the old source files.
+3. Run PowerShell inside the extracted time-tracker folder:
+       npm.cmd install
+       npm.cmd start
+   To build new Windows executables:
+       npm.cmd run dist:win
+4. Your existing URI, history, screenshots and offline tracking state remain in:
+       %APPDATA%\DaymarkTimeTracker
+   Do NOT remove this folder when changing versions or rebuilding the executable.
+5. The app now restores the previous selected profile automatically. It will
+   NOT automatically start tracking; click Start tracking to begin.
+6. Settings displays 'Connection saved on this computer' if the URI is stored.
+   Use 'Change connection' only when your Atlas URI/password actually changes.
+7. When Atlas is temporarily offline, Daymark retains its URI and retries
+   periodically while preserving local tracking. Do not enter the URI again.
+
+If this is the FIRST EVER launch, enter your URI in Settings and Save & connect.
+If Windows Smart App Control blocks downloaded .bat scripts, use the PowerShell
+commands above. The app and its unsigned builds can still be blocked by Windows;
+do not disable security protections merely to install Daymark.
+
+Security: the existing %APPDATA%\DaymarkTimeTracker\.env file contains the Atlas
+URI in plaintext. Keep it private; use a least-privileged database user.
+
+Node syntax checks and 13 unit tests passed. Windows Electron/Atlas integration
+must still be verified on a Windows PC.

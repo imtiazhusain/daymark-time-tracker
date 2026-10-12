@@ -1,0 +1,10 @@
+node_modules/
+screenshots/*
+!screenshots/.gitkeep
+state.json
+state.json.tmp
+pending-records.json
+pending-records.json.tmp
+*.log
+dist/
+*.zip
